@@ -4,12 +4,14 @@ import com.grytaJan.ExpenseTracker.controllers.Comment.dto.CommentDto;
 import com.grytaJan.ExpenseTracker.controllers.Comment.dto.CreateCommentDto;
 import com.grytaJan.ExpenseTracker.errors.ResourceNotFoundException;
 import com.grytaJan.ExpenseTracker.models.Comment;
+import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.services.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comments;
 import org.hibernate.type.ListType;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,6 +25,7 @@ public class CommentController {
     private final CommentService commentService;
 
     @GetMapping
+    @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
     public ResponseEntity<List<CommentDto>> getAllComments() {
         List<Comment> comments = commentService.getAll();
 

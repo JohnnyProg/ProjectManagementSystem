@@ -2,6 +2,8 @@ package com.grytaJan.ExpenseTracker.models;
 
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.Arrays;
+
 public enum Role implements GrantedAuthority {
     ROLE_USER,
     ROLE_ADMIN,
@@ -13,4 +15,9 @@ public enum Role implements GrantedAuthority {
     public String getAuthority() {
         return name();
     }
+
+    public static String[] getAuthorities(Role... roles) {
+        return Arrays.stream(roles) .map(Role::getAuthority) .toArray(String[]::new);
+    }
 }
+

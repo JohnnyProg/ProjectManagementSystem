@@ -1,23 +1,18 @@
 package com.grytaJan.ExpenseTracker.services;
 
-import com.grytaJan.ExpenseTracker.dto.UserLoginDTO;
-import com.grytaJan.ExpenseTracker.dto.UserRegisterDTO;
+import com.grytaJan.ExpenseTracker.controllers.User.dto.UserLoginDTO;
+import com.grytaJan.ExpenseTracker.controllers.User.dto.UserRegisterDTO;
 import com.grytaJan.ExpenseTracker.errors.UserAlreadyExistsException;
 import com.grytaJan.ExpenseTracker.models.Role;
 import com.grytaJan.ExpenseTracker.models.User;
 import com.grytaJan.ExpenseTracker.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
-import org.apache.catalina.security.SecurityConfig;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;

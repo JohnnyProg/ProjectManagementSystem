@@ -1,21 +1,19 @@
 package com.grytaJan.ExpenseTracker.controllers.User;
 
 import com.grytaJan.ExpenseTracker.controllers.User.dto.UserDto;
-import com.grytaJan.ExpenseTracker.dto.UserLoginDTO;
-import com.grytaJan.ExpenseTracker.dto.UserRegisterDTO;
+import com.grytaJan.ExpenseTracker.controllers.User.dto.UserLoginDTO;
+import com.grytaJan.ExpenseTracker.controllers.User.dto.UserRegisterDTO;
 import com.grytaJan.ExpenseTracker.errors.UserAlreadyExistsException;
-import com.grytaJan.ExpenseTracker.models.Role;
+import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.models.User;
-import com.grytaJan.ExpenseTracker.repositories.UserRepository;
 import com.grytaJan.ExpenseTracker.services.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -40,6 +38,7 @@ public class UserController {
     }
 
     @GetMapping("/getAll")
+    @Secured({RoleConstants.ROLE_ADMIN})
     public ResponseEntity<List<UserDto>> getAllUsers() {
         List<User> users = userService.getAllUsers();
         List<UserDto> dtos = new ArrayList<>();
