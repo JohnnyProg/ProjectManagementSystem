@@ -8,6 +8,7 @@ import com.grytaJan.ExpenseTracker.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,14 +21,15 @@ public class ProjectService {
         return projectRepository.findAll();
     }
 
-    public Optional<Project> getProjectById(Long id) {
-        return projectRepository.findById(id);
+    public Project getProjectById(Long id) throws ResourceNotFoundException {
+        return projectRepository.findById(id).orElseThrow( () -> new ResourceNotFoundException("Project", Long.toString(id)));
     }
 
     public Project createProject(CreateProjectDto projectDto) {
         Project project = Project.builder()
                 .name(projectDto.getName())
                 .description(projectDto.getDescription())
+                .tasks(new ArrayList<>())
                 .build();
         return projectRepository.save(project);
     }

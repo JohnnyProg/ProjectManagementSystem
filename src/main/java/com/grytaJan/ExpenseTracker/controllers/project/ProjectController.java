@@ -39,11 +39,10 @@ public class ProjectController {
     @GetMapping("/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
     public ResponseEntity<ProjectDto> getProjectById(@PathVariable Long id) throws ResourceNotFoundException {
-        Optional<Project> project = projectService.getProjectById(id);
-        if(project.isPresent()) {
-            return new ResponseEntity<>(new ProjectDto(project.get()), HttpStatus.OK);
-        }
-        throw new ResourceNotFoundException("project", id.toString());
+        Project project = projectService.getProjectById(id);
+
+        return new ResponseEntity<>(new ProjectDto(project), HttpStatus.OK);
+
     }
 
     @PostMapping
