@@ -8,6 +8,8 @@ import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.models.Task;
 import com.grytaJan.ExpenseTracker.services.ProjectService;
 import com.grytaJan.ExpenseTracker.services.TaskService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -48,7 +50,7 @@ public class TaskController {
 
     @GetMapping("/project/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<List<TaskDto>> getTasksOnProject(@PathVariable long id) throws ResourceNotFoundException {
+    public ResponseEntity<List<TaskDto>> getTasksOnProject(@PathVariable @Positive long id) throws ResourceNotFoundException {
         List<Task> tasks = projectService.getTasksOnProject(id);
         List<TaskDto> dtos = new ArrayList<>();
         tasks.forEach(task -> {
@@ -58,34 +60,34 @@ public class TaskController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<TaskDto> getTaskById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<TaskDto> getTaskById(@PathVariable @Positive Long id) throws ResourceNotFoundException {
         Task task = taskService.getTaskById(id);
         return new ResponseEntity<>(new TaskDto(task), HttpStatus.OK);
     }
 
     @PostMapping
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<TaskDto> createTask(@RequestBody CreateTaskDto task) throws ResourceNotFoundException {
+    public ResponseEntity<TaskDto> createTask(@RequestBody @Valid CreateTaskDto task) throws ResourceNotFoundException {
         Task newTask =  taskService.createTask(task);
         return new ResponseEntity<>(new TaskDto(newTask), HttpStatus.OK);
     }
 
     @PostMapping("/{id}/status")
-    public ResponseEntity<TaskDto> changeStatusOnTask(@PathVariable long id, @RequestBody String status) throws ResourceNotFoundException {
+    public ResponseEntity<TaskDto> changeStatusOnTask(@PathVariable @Positive long id, @RequestBody @Valid String status) throws ResourceNotFoundException {
         Task task = taskService.changeStatus(id, status);
         return new ResponseEntity<>(new TaskDto(task), HttpStatus.ACCEPTED);
     }
 
     @PostMapping("/{id}/addUsers")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<TaskDto> addUsersToTask(@PathVariable long id, @RequestBody Long userId) throws ResourceNotFoundException {
+    public ResponseEntity<TaskDto> addUsersToTask(@PathVariable @Positive long id, @RequestBody @Valid Long userId) throws ResourceNotFoundException {
         Task task = taskService.addUsersToTask(id, userId);
         return new ResponseEntity<>(new TaskDto(task), HttpStatus.ACCEPTED);
     }
 
     @DeleteMapping("/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<String> deleteTask(@PathVariable long id) throws ResourceNotFoundException {
+    public ResponseEntity<String> deleteTask(@PathVariable @Positive long id) throws ResourceNotFoundException {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }

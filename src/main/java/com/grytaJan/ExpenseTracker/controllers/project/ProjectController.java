@@ -7,10 +7,13 @@ import com.grytaJan.ExpenseTracker.models.Project;
 import com.grytaJan.ExpenseTracker.models.Role;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.services.ProjectService;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +23,7 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/projects")
 @RequiredArgsConstructor
+@Validated
 public class ProjectController {
 
     private final ProjectService projectService;
@@ -38,7 +42,7 @@ public class ProjectController {
 
     @GetMapping("/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<ProjectDto> getProjectById(@PathVariable Long id) throws ResourceNotFoundException {
+    public ResponseEntity<ProjectDto> getProjectById(@PathVariable @Positive Long id) throws ResourceNotFoundException {
         Project project = projectService.getProjectById(id);
 
         return new ResponseEntity<>(new ProjectDto(project), HttpStatus.OK);
@@ -47,7 +51,7 @@ public class ProjectController {
 
     @PostMapping
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<ProjectDto> createProject(@RequestBody CreateProjectDto project) {
+    public ResponseEntity<ProjectDto> createProject(@RequestBody @Valid CreateProjectDto project) {
         Project project1 =  projectService.createProject(project);
         return new ResponseEntity<>(new ProjectDto(project1), HttpStatus.CREATED);
     }
@@ -55,7 +59,7 @@ public class ProjectController {
 
     @DeleteMapping("/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public void deleteProject(@PathVariable Long id) {
+    public void deleteProject(@PathVariable @Positive Long id) {
         projectService.deleteProject(id);
     }
 }
