@@ -6,6 +6,8 @@ import com.grytaJan.ExpenseTracker.models.Project;
 import com.grytaJan.ExpenseTracker.models.Task;
 import com.grytaJan.ExpenseTracker.repositories.ProjectRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -19,6 +21,10 @@ public class ProjectService {
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
+    }
+
+    public Page<Project> getAllProjects(Pageable pageable) {
+        return projectRepository.findAll(pageable);
     }
 
     public Project getProjectById(Long id) throws ResourceNotFoundException {
