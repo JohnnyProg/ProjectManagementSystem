@@ -27,7 +27,7 @@ public class Project {
 
     private String description;
 
-    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "project", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @JsonManagedReference // Serialize this side
     private List<Task> tasks = new ArrayList<>();
 }

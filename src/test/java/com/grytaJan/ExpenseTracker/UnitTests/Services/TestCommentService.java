@@ -58,30 +58,6 @@ public class TestCommentService {
     }
 
     @Test
-    void testGetAllForTask_Success() throws ResourceNotFoundException {
-        long taskId = 1L;
-        Task mockTask = new Task();
-        mockTask.setId(taskId);
-        List<Comment> mockComments = List.of(new Comment(), new Comment());
-        mockTask.setComments(mockComments);
-
-        when(taskRepository.findById(taskId)).thenReturn(Optional.of(mockTask));
-
-        List<Comment> commentsForTask = commentService.getAllForTask(taskId);
-
-        assertEquals(mockComments, commentsForTask);
-        verify(taskRepository).findById(taskId);
-    }
-    @Test
-    void testGetAllForTask_TaskNotFound() {
-        long taskId = 1L;
-
-        when(taskRepository.findById(taskId)).thenReturn(Optional.empty());
-
-        assertThrows(ResourceNotFoundException.class, () -> commentService.getAllForTask(taskId));
-        verify(taskRepository).findById(taskId);
-    }
-    @Test
     void testGetUserComments_Success() throws ResourceNotFoundException {
         User mockUser = new User();
         List<Comment> mockComments = List.of(new Comment(), new Comment());

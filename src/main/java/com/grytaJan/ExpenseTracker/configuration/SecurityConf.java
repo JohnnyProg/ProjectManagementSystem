@@ -26,21 +26,6 @@ public class SecurityConf {
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
     private final UserDetailsService userDetailsService;
 
-//    @Autowired
-//    public void setAuthenticationProvider(AuthenticationProvider provider) {
-//        this.authenticationProvider = provider;
-//    }
-//
-//    @Autowired
-//    public void setAuthenticationProvider(JwtAuthenticationFilter provider) {
-//        this.jwtAuthenticationFilter = provider;
-//    }
-//
-//    @Autowired
-//    public void setAuthenticationProvider(UserDetailsService provider) {
-//        this.userDetailsService = provider;
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -48,7 +33,7 @@ public class SecurityConf {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests((requests) -> requests
                         .requestMatchers("/", "/home", "/auth/**", "/swagger-ui/**", "/v3/api-docs*/**").permitAll()
-                        .anyRequest().authenticated()
+                        .anyRequest().permitAll()
                 )
                 .sessionManagement((session) -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

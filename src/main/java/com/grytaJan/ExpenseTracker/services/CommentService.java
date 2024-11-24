@@ -9,6 +9,8 @@ import com.grytaJan.ExpenseTracker.repositories.CommentRepository;
 import com.grytaJan.ExpenseTracker.repositories.TaskRepository;
 import com.grytaJan.ExpenseTracker.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -25,10 +27,15 @@ public class CommentService {
         return commentRepository.findAll();
     }
 
-    public List<Comment> getAllForTask(long taskId) throws ResourceNotFoundException {
+    public Page<Comment> getAll(Pageable pageable) {
+        return commentRepository.findAll(pageable);
+    }
+
+    public Page<Comment> getAllForTask(long taskId, Pageable pageable) throws ResourceNotFoundException {
         Task task = taskRepository.findById(taskId)
                 .orElseThrow(() -> new ResourceNotFoundException("Task", Long.toString(taskId)));
-        return task.getComments();
+        Page<Comment> comments = commentRepository.findByTaskId(task.getId(), pageable);
+        return comments;
     }
 
     public Comment createComment(CreateCommentDto comment) throws ResourceNotFoundException {
@@ -50,5 +57,11 @@ public class CommentService {
         User realUser = userRepository.findById(user.getId())
                 .orElseThrow(() -> new ResourceNotFoundException("User", Long.toString(user.getId())));
         return realUser.getComments();
+    }
+
+    public Page<Comment> getUserComments(Pageable pageable) throws ResourceNotFoundException {
+        User user = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+
+        return commentRepository.findByUser(user, pageable);
     }
 }

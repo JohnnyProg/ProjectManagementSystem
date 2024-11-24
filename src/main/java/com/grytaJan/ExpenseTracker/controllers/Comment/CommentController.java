@@ -6,11 +6,16 @@ import com.grytaJan.ExpenseTracker.errors.ResourceNotFoundException;
 import com.grytaJan.ExpenseTracker.models.Comment;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.services.CommentService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
 import org.hibernate.annotations.Comments;
 import org.hibernate.type.ListType;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -30,22 +35,38 @@ public class CommentController {
 
     @GetMapping
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<List<CommentDto>> getAllComments() {
-        List<Comment> comments = commentService.getAll();
+    public ResponseEntity<PageResponse<CommentDto>> getAllComments(
+            @Valid @ModelAttribute PaginationInfo paginationInfo
+    ) {
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
 
-        return new ResponseEntity<>(commentListToDtos(comments), HttpStatus.OK);
+        Page<Comment> comments = commentService.getAll(pageable);
+
+        return ResponseEntity.ok(this.commentPageToPageResponse(comments));
     }
 
     @GetMapping("/myComments")
-    public ResponseEntity<List<CommentDto>> getMyComments() throws ResourceNotFoundException {
-        List<Comment> comments = commentService.getUserComments();
-        return new ResponseEntity<>(commentListToDtos(comments), HttpStatus.OK);
+    public ResponseEntity<PageResponse<CommentDto>> getMyComments(
+            @Valid @ModelAttribute PaginationInfo paginationInfo
+    ) throws ResourceNotFoundException {
+
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
+
+        Page<Comment> comments = commentService.getUserComments(pageable);
+
+        return ResponseEntity.ok(this.commentPageToPageResponse(comments));
     }
 
     @GetMapping("/{task_id}")
-    public ResponseEntity<List<CommentDto>> getAllCommentsForTask(@PathVariable @Positive long task_id) throws ResourceNotFoundException {
-        List<Comment> comments = commentService.getAllForTask(task_id);
-        return new ResponseEntity<>(commentListToDtos(comments), HttpStatus.OK);
+    public ResponseEntity<PageResponse<CommentDto>> getAllCommentsForTask(
+            @PathVariable @Positive long task_id,
+            @Valid @ModelAttribute PaginationInfo paginationInfo
+    ) throws ResourceNotFoundException {
+
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
+
+        Page<Comment> comments = commentService.getAllForTask(task_id, pageable);
+        return ResponseEntity.ok(this.commentPageToPageResponse(comments));
     }
 
     @PostMapping("/")
@@ -54,14 +75,14 @@ public class CommentController {
         return new ResponseEntity<>(new CommentDto(c), HttpStatus.CREATED);
     }
 
-    private List<CommentDto> commentListToDtos(List<Comment> comments) {
-        List<CommentDto> dtos = new ArrayList<>();
-        for(Comment c : comments) {
-            dtos.add(new CommentDto(c));
-        }
-        return dtos;
+    private Page<CommentDto> commentPageToDtos(Page<Comment> comments) {
+        return comments.map(CommentDto::new);
     }
 
+
+    private PageResponse<CommentDto> commentPageToPageResponse(Page<Comment> comments) {
+        return new PageResponse<>(this.commentPageToDtos(comments));
+    }
 
 
 }
