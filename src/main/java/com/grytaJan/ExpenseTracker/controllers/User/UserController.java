@@ -7,7 +7,14 @@ import com.grytaJan.ExpenseTracker.errors.UserAlreadyExistsException;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.models.User;
 import com.grytaJan.ExpenseTracker.services.UserService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageMapper;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -39,12 +46,18 @@ public class UserController {
 
     @GetMapping("/getAll")
     @Secured({RoleConstants.ROLE_ADMIN})
-    public ResponseEntity<List<UserDto>> getAllUsers() {
-        List<User> users = userService.getAllUsers();
-        List<UserDto> dtos = new ArrayList<>();
-        for(User user : users) {
-            dtos.add(new UserDto(user));
-        }
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<PageResponse<UserDto>> getAllUsers(
+            @ModelAttribute @Valid PaginationInfo paginationInfo
+    ) {
+
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
+
+        Page<User> users = userService.getAllUsers(pageable);
+
+        return new ResponseEntity<>(this.userPageToPageResponse(users), HttpStatus.OK);
     }
+
+    private PageResponse<UserDto> userPageToPageResponse(Page<User> users) {
+        return PageMapper.pageToPageResponse(users, UserDto::new);
+    };
 }

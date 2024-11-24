@@ -6,6 +6,7 @@ import com.grytaJan.ExpenseTracker.errors.ResourceNotFoundException;
 import com.grytaJan.ExpenseTracker.models.Comment;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.services.CommentService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageMapper;
 import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
@@ -75,13 +76,9 @@ public class CommentController {
         return new ResponseEntity<>(new CommentDto(c), HttpStatus.CREATED);
     }
 
-    private Page<CommentDto> commentPageToDtos(Page<Comment> comments) {
-        return comments.map(CommentDto::new);
-    }
-
 
     private PageResponse<CommentDto> commentPageToPageResponse(Page<Comment> comments) {
-        return new PageResponse<>(this.commentPageToDtos(comments));
+        return PageMapper.pageToPageResponse(comments, CommentDto::new);
     }
 
 

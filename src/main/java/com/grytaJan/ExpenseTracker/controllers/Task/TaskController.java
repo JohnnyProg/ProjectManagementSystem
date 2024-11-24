@@ -10,6 +10,7 @@ import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.models.Task;
 import com.grytaJan.ExpenseTracker.services.ProjectService;
 import com.grytaJan.ExpenseTracker.services.TaskService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageMapper;
 import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
@@ -102,12 +103,7 @@ public class TaskController {
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
     }
 
-    private Page<TaskDto> taskPageToDtos(Page<Task> tasks) {
-        return tasks.map(TaskDto::new);
-    }
-
-
     private PageResponse<TaskDto> taskPageToPageResponse(Page<Task> tasks) {
-        return new PageResponse<>(this.taskPageToDtos(tasks));
+        return PageMapper.pageToPageResponse(tasks, TaskDto::new);
     }
 }

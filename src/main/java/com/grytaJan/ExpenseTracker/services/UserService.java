@@ -7,6 +7,8 @@ import com.grytaJan.ExpenseTracker.models.Role;
 import com.grytaJan.ExpenseTracker.models.User;
 import com.grytaJan.ExpenseTracker.repositories.UserRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -55,6 +57,10 @@ public class UserService {
 
     public List<User> getAllUsers() {
         return userRepository.findAll();
+    }
+
+    public Page<User> getAllUsers(Pageable pageable) {
+        return userRepository.findAll(pageable);
     }
     public Optional<User> getUserById(Long id) {
         return userRepository.findById(id);

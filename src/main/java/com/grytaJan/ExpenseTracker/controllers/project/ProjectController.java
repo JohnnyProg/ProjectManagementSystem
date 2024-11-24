@@ -9,6 +9,7 @@ import com.grytaJan.ExpenseTracker.models.Project;
 import com.grytaJan.ExpenseTracker.models.Role;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.services.ProjectService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageMapper;
 import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
@@ -73,12 +74,7 @@ public class ProjectController {
         projectService.deleteProject(id);
     }
 
-    private Page<ProjectDto> projectPageToDtos(Page<Project> comments) {
-        return comments.map(ProjectDto::new);
-    }
-
-
     private PageResponse<ProjectDto> projectPageToPageResponse(Page<Project> projects) {
-        return new PageResponse<>(this.projectPageToDtos(projects));
+        return PageMapper.pageToPageResponse(projects, ProjectDto::new);
     }
 }
