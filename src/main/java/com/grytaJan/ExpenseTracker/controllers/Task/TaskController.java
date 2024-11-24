@@ -1,16 +1,23 @@
 package com.grytaJan.ExpenseTracker.controllers.Task;
 
+import com.grytaJan.ExpenseTracker.controllers.Comment.dto.CommentDto;
 import com.grytaJan.ExpenseTracker.controllers.Task.dto.CreateTaskDto;
 import com.grytaJan.ExpenseTracker.controllers.Task.dto.TaskDto;
 import com.grytaJan.ExpenseTracker.errors.ResourceNotFoundException;
+import com.grytaJan.ExpenseTracker.models.Comment;
 import com.grytaJan.ExpenseTracker.models.Project;
 import com.grytaJan.ExpenseTracker.models.RoleConstants;
 import com.grytaJan.ExpenseTracker.models.Task;
 import com.grytaJan.ExpenseTracker.services.ProjectService;
 import com.grytaJan.ExpenseTracker.services.TaskService;
+import com.grytaJan.ExpenseTracker.utils.pagination.PageResponse;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
+import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Positive;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
@@ -29,15 +36,14 @@ public class TaskController {
 
     @GetMapping
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<List<TaskDto>> getAllTasks() {
-        List<Task> tasks = taskService.getAllTasks();
-        List<TaskDto> dtos = new ArrayList<>();
-        tasks.forEach(task -> {
-            System.out.println("Task = ");
-            System.out.println(task);
-            dtos.add(new TaskDto(task));
-        });
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<PageResponse<TaskDto>> getAllTasks(
+            @Valid @ModelAttribute PaginationInfo paginationInfo
+    ) {
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
+
+        Page<Task> tasks = taskService.getAllTasks(pageable);
+
+        return new ResponseEntity<>(this.taskPageToPageResponse(tasks), HttpStatus.OK);
     }
 
     @GetMapping("/full")
@@ -50,13 +56,17 @@ public class TaskController {
 
     @GetMapping("/project/{id}")
     @Secured({RoleConstants.ROLE_ADMIN, RoleConstants.ROLE_MANAGER})
-    public ResponseEntity<List<TaskDto>> getTasksOnProject(@PathVariable @Positive long id) throws ResourceNotFoundException {
-        List<Task> tasks = projectService.getTasksOnProject(id);
-        List<TaskDto> dtos = new ArrayList<>();
-        tasks.forEach(task -> {
-            dtos.add(new TaskDto(task));
-        });
-        return new ResponseEntity<>(dtos, HttpStatus.OK);
+    public ResponseEntity<PageResponse<TaskDto>> getTasksOnProject(
+            @PathVariable @Positive long id,
+            @Valid @ModelAttribute PaginationInfo paginationInfo
+    ) throws ResourceNotFoundException {
+
+        Pageable pageable = PaginationUtils.createPageable(paginationInfo);
+
+
+        Page<Task> tasks = projectService.getTasksOnProject(id, pageable);
+
+        return new ResponseEntity<>(this.taskPageToPageResponse(tasks), HttpStatus.OK);
     }
 
     @GetMapping("/{id}")
@@ -90,5 +100,14 @@ public class TaskController {
     public ResponseEntity<String> deleteTask(@PathVariable @Positive long id) throws ResourceNotFoundException {
         taskService.deleteTask(id);
         return new ResponseEntity<>(HttpStatus.ACCEPTED);
+    }
+
+    private Page<TaskDto> taskPageToDtos(Page<Task> tasks) {
+        return tasks.map(TaskDto::new);
+    }
+
+
+    private PageResponse<TaskDto> taskPageToPageResponse(Page<Task> tasks) {
+        return new PageResponse<>(this.taskPageToDtos(tasks));
     }
 }

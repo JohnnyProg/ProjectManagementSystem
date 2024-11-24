@@ -5,6 +5,7 @@ import com.grytaJan.ExpenseTracker.errors.ResourceNotFoundException;
 import com.grytaJan.ExpenseTracker.models.Project;
 import com.grytaJan.ExpenseTracker.models.Task;
 import com.grytaJan.ExpenseTracker.repositories.ProjectRepository;
+import com.grytaJan.ExpenseTracker.repositories.TaskRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -18,6 +19,7 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ProjectService {
     private final ProjectRepository projectRepository;
+    private final TaskRepository taskRepository;
 
     public List<Project> getAllProjects() {
         return projectRepository.findAll();
@@ -48,12 +50,11 @@ public class ProjectService {
         return projectRepository.save(project);
     }
 
-    public List<Task> getTasksOnProject(long id) throws ResourceNotFoundException {
-        Optional<Project> project = projectRepository.findById(id);
-        if(project.isPresent()) {
-            return project.get().getTasks();
-        }
-        throw new ResourceNotFoundException("project", Long.toString(id));
+    public Page<Task> getTasksOnProject(long id, Pageable pageable) throws ResourceNotFoundException {
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Project", Long.toString(id)));
+        Page<Task> tasks = taskRepository.findAllByProjectId(id, pageable);
+        return tasks;
     }
 
     public void deleteProject(Long id) {
