@@ -25,8 +25,13 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/expense_tracker
       SPRING_DATASOURCE_USERNAME: admin
       SPRING_DATASOURCE_PASSWORD: admin
+      LOGGING_FILE_NAME: /logs/app.log
+      LOGGING_FILE_PATH: /logs
+      LOGGING_LEVEL_ROOT: INFO
     depends_on:
       - postgres
+    volumes:
+      - app-logs:/logs
     networks:
       - app_network
 
@@ -36,3 +41,5 @@ networks:
 
 volumes:
   postgres_data:
+  app-logs:
+    external: true
