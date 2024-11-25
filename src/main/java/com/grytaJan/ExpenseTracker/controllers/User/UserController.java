@@ -13,6 +13,9 @@ import com.grytaJan.ExpenseTracker.utils.pagination.PaginationInfo;
 import com.grytaJan.ExpenseTracker.utils.pagination.PaginationUtils;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.Marker;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -29,9 +32,12 @@ import java.util.List;
 public class UserController {
     private final UserService userService;
 
+    private static final Logger logger = LoggerFactory.getLogger(UserService.class);
+
     @PostMapping("/register")
     public ResponseEntity<String> registerUser(@RequestBody UserRegisterDTO user) throws UserAlreadyExistsException {
         userService.register(user);
+        logger.info("User created: {}", user);
         return new ResponseEntity<>("User created", HttpStatus.ACCEPTED);
     }
 
@@ -39,6 +45,7 @@ public class UserController {
     public ResponseEntity<String> loginUser(@RequestBody UserLoginDTO user){
         String token = userService.login(user);
         if(token != null) {
+            logger.info("User authenticated: {}", user);
             return new ResponseEntity<>(token, HttpStatus.OK);
         }
         return new ResponseEntity<>("wrong login or password", HttpStatus.BAD_REQUEST);
