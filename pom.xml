@@ -11,6 +11,7 @@
 	<groupId>com.grytaJan</groupId>
 	<artifactId>ExpenseTracker</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
+	<packaging>jar</packaging> <!-- This is the line to add -->
 	<name>ExpenseTracker</name>
 	<description>Expense Tracker</description>
 	<url/>
