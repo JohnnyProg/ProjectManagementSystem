@@ -28,7 +28,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/comment")
+@RequestMapping("/api/v1/comment")
 @RequiredArgsConstructor
 @Validated
 @CrossOrigin

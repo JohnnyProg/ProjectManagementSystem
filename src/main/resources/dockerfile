@@ -1,3 +1,10 @@
-FROM httpd:2.4
+FROM php:8.2-apache
 
-COPY ./jee_lab/ /usr/local/apache2/htdocs/
+# Copy your local website files into the container
+COPY ./jee_lab/ /var/www/html/
+
+# Enable mod_rewrite if needed
+RUN a2enmod rewrite
+
+# Set working directory
+WORKDIR /var/www/html/
