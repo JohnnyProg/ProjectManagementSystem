@@ -31,6 +31,7 @@ import java.util.List;
 @RequestMapping("/comment")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class CommentController {
     private final CommentService commentService;
 

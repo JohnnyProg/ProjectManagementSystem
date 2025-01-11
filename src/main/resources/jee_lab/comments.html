@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Comments</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Comments</h1>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Task</th>
+                    <th>Content</th>
+                </tr>
+            </thead>
+            <tbody id="commentList">
+                <!-- Comments will be loaded here -->
+            </tbody>
+        </table>
+        <nav aria-label="Comment pagination">
+            <ul class="pagination" id="commentPagination">
+                <!-- Pagination links will be added here -->
+            </ul>
+        </nav>
+        <a href="index.html">Back to Home</a>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        const commentList = document.getElementById('commentList');
+        const commentPagination = document.getElementById('commentPagination');
+        let currentPageComments = 0;
+        let currentSizeComments = 5;
+        let sortByComments = 'id';
+        let sortDirectionComments = 'asc';
+
+        function fetchComments(page = 0, size = 5, sortBy = 'id', direction = 'asc') {
+            const token = localStorage.getItem('token');
+            fetch(`http://localhost:8080/comment?paginationInfo.page=${page}&paginationInfo.size=${size}&paginationInfo.sortBy=${sortBy}&paginationInfo.direction=${direction}`, {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                commentList.innerHTML = '';
+                data.content.forEach(comment => {
+                    commentList.innerHTML += `
+                        <tr>
+                            <td>${comment.userName}</td>
+                            <td>${comment.taskTitle}</td>
+                            <td>${comment.content}</td>
+                        </tr>
+                    `;
+                });
+                renderCommentPagination(data.totalPages);
+            });
+        }
+
+        function renderCommentPagination(totalPages) {
+            commentPagination.innerHTML = '';
+            for (let i = 0; i < totalPages; i++) {
+                const listItem = document.createElement('li');
+                listItem.classList.add('page-item');
+                if (i === currentPageComments) {
+                    listItem.classList.add('active');
+                }
+                const link = document.createElement('a');
+                link.classList.add('page-link');
+                link.href = '#';
+                link.textContent = i + 1;
+                link.addEventListener('click', () => {
+                    currentPageComments = i;
+                    fetchComments(currentPageComments, currentSizeComments, sortByComments, sortDirectionComments);
+                });
+                listItem.appendChild(link);
+                commentPagination.appendChild(listItem);
+            }
+        }
+
+        fetchComments();
+    </script>
+</body>
+</html>

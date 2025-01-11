@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Task</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Task</h1>
+        <form id="createTaskForm">
+            <div class="mb-3">
+                <label for="taskTitle" class="form-label">Title</label>
+                <input type="text" class="form-control" id="taskTitle" required>
+            </div>
+            <div class="mb-3">
+                <label for="taskDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="taskDescription"></textarea>
+            </div>
+            <div class="mb-3">
+                <label for="taskPriority" class="form-label">Priority</label>
+                <select class="form-select" id="taskPriority" required>
+                    <option value="LOW">Low</option>
+                    <option value="MEDIUM">Medium</option>
+                    <option value="HIGH">High</option>
+                </select>
+            </div>
+            <div class="mb-3">
+                <label for="taskProject" class="form-label">Project</label>
+                <select class="form-select" id="taskProject" required>
+                    <!-- Projects will be loaded here -->
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Task</button>
+        </form>
+        <a href="tasks.html">Back to Tasks</a>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        const taskProjectSelect = document.getElementById('taskProject');
+
+        // Fetch projects to populate the dropdown
+        function fetchProjectsForDropdown() {
+            const token = localStorage.getItem('token');
+            fetch('http://localhost:8080/projects', {
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                data.content.forEach(project => {
+                    const option = document.createElement('option');
+                    option.value = project.id;
+                    option.textContent = project.name;
+                    taskProjectSelect.appendChild(option);
+                });
+            });
+        }
+        fetchProjectsForDropdown();
+
+        document.getElementById('createTaskForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const taskTitle = document.getElementById('taskTitle').value;
+            const taskDescription = document.getElementById('taskDescription').value;
+            const taskPriority = document.getElementById('taskPriority').value;
+            const taskProjectId = document.getElementById('taskProject').value;
+            const token = localStorage.getItem('token');
+
+            fetch('http://localhost:8080/tasks', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    title: taskTitle,
+                    description: taskDescription,
+                    priority: taskPriority,
+                    project_id: parseInt(taskProjectId)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Task created successfully!');
+                window.location.href = 'tasks.html';
+            })
+            .catch(error => {
+                console.error('Error creating task:', error);
+                alert('Failed to create task.');
+            });
+        });
+    </script>
+</body>
+</html>

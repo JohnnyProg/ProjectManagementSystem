@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Comment</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Comment</h1>
+        <form id="createCommentForm">
+            <div class="mb-3">
+                <label for="commentContent" class="form-label">Comment</label>
+                <textarea class="form-control" id="commentContent" required></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Add Comment</button>
+        </form>
+        <a href="javascript:history.back()">Back</a>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('createCommentForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const commentContent = document.getElementById('commentContent').value;
+            const token = localStorage.getItem('token');
+            const urlParams = new URLSearchParams(window.location.search);
+            const taskId = urlParams.get('taskId');
+
+            fetch('http://localhost:8080/comment/', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    content: commentContent,
+                    taskId: parseInt(taskId)
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Comment added successfully!');
+                window.location.href = `task_details.html?id=${taskId}`;
+            })
+            .catch(error => {
+                console.error('Error creating comment:', error);
+                alert('Failed to create comment.');
+            });
+        });
+    </script>
+</body>
+</html>

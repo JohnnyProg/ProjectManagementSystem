@@ -32,6 +32,7 @@ import java.util.Optional;
 @RequestMapping("/projects")
 @RequiredArgsConstructor
 @Validated
+@CrossOrigin
 public class ProjectController {
 
     private final ProjectService projectService;

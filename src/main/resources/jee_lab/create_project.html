@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Project</title>
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Create New Project</h1>
+        <form id="createProjectForm">
+            <div class="mb-3">
+                <label for="projectName" class="form-label">Name</label>
+                <input type="text" class="form-control" id="projectName" required>
+            </div>
+            <div class="mb-3">
+                <label for="projectDescription" class="form-label">Description</label>
+                <textarea class="form-control" id="projectDescription"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">Create Project</button>
+        </form>
+        <a href="projects.html">Back to Projects</a>
+    </div>
+    <script src="js/app.js"></script>
+    <script>
+        document.getElementById('createProjectForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const projectName = document.getElementById('projectName').value;
+            const projectDescription = document.getElementById('projectDescription').value;
+            const token = localStorage.getItem('token');
+
+            fetch('http://localhost:8080/projects', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify({
+                    name: projectName,
+                    description: projectDescription
+                })
+            })
+            .then(response => response.json())
+            .then(data => {
+                alert('Project created successfully!');
+                window.location.href = 'projects.html';
+            })
+            .catch(error => {
+                console.error('Error creating project:', error);
+                alert('Failed to create project.');
+            });
+        });
+    </script>
+</body>
+</html>
