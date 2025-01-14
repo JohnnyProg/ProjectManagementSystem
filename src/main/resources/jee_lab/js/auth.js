@@ -3,7 +3,9 @@ document.getElementById('loginForm').addEventListener('submit', function(event) 
   const username = document.getElementById('loginUsername').value;
   const password = document.getElementById('loginPassword').value;
 
-  fetch('http://localhost:8080/auth/login', {
+  const apiUrl = `${window.APP_API_URL}/api/v1`;
+
+  fetch(`${apiUrl}/auth/login`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'
@@ -34,8 +36,8 @@ document.getElementById('registerForm').addEventListener('submit', function(even
   const username = document.getElementById('registerUsername').value;
   const password = document.getElementById('registerPassword').value;
   const email = document.getElementById('registerEmail').value;
-
-  fetch('http://localhost:8080/auth/register', {
+  const apiUrl = `${window.APP_API_URL}/api/v1`;
+  fetch(`${apiUrl}/auth/register`, {
       method: 'POST',
       headers: {
           'Content-Type': 'application/json'

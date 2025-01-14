@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Task</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -39,11 +40,11 @@
     <script src="js/app.js"></script>
     <script>
         const taskProjectSelect = document.getElementById('taskProject');
-
+        const apiUrl = `${window.APP_API_URL}/api/v1`;
         // Fetch projects to populate the dropdown
         function fetchProjectsForDropdown() {
             const token = localStorage.getItem('token');
-            fetch('http://localhost:8080/projects', {
+            fetch(`${apiUrl}/projects`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -68,7 +69,7 @@
             const taskProjectId = document.getElementById('taskProject').value;
             const token = localStorage.getItem('token');
 
-            fetch('http://localhost:8080/tasks', {
+            fetch(`${apiUrl}/tasks`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Comments</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -36,10 +37,11 @@
         let currentSizeComments = 5;
         let sortByComments = 'id';
         let sortDirectionComments = 'asc';
+        const apiUrl = `${window.APP_API_URL}/api/v1`;
 
         function fetchComments(page = 0, size = 5, sortBy = 'id', direction = 'asc') {
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:8080/comment?paginationInfo.page=${page}&paginationInfo.size=${size}&paginationInfo.sortBy=${sortBy}&paginationInfo.direction=${direction}`, {
+            fetch(`${apiUrl}/comment?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }

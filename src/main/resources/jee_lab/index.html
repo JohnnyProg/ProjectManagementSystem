@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Management</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -18,5 +19,8 @@
         </ul>
     </div>
     <script src="js/app.js"></script>
+    <script>
+        console.log("APP_API_URL:", window.APP_API_URL);
+    </script>
 </body>
 </html>
