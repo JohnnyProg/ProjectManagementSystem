@@ -98,14 +98,13 @@
             const taskId = getTaskId();
             const newStatus = document.getElementById('newStatus').value;
             const token = localStorage.getItem('token');
-
             fetch(`http://localhost:8080/tasks/${taskId}/status`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(newStatus)
+                body: newStatus
             })
             .then(response => response.json())
             .then(data => {
