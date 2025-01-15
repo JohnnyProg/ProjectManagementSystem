@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Task Details</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -48,6 +49,7 @@
     </div>
     <script src="js/app.js"></script>
     <script>
+        const apiUrl = `${window.APP_API_URL}/api/v1`;
         const taskIdSpan = document.getElementById('taskId');
         const taskTitleH1 = document.getElementById('taskTitle');
         const taskDescriptionSpan = document.getElementById('taskDescription');
@@ -65,7 +67,7 @@
         function fetchTaskDetails() {
             const taskId = getTaskId();
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:8080/tasks/${taskId}`, {
+            fetch(`${apiUrl}/tasks/${taskId}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -98,7 +100,8 @@
             const taskId = getTaskId();
             const newStatus = document.getElementById('newStatus').value;
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:8080/tasks/${taskId}/status`, {
+
+            fetch(`${apiUrl}/tasks/${taskId}/status`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -123,7 +126,7 @@
             const userIdToAdd = document.getElementById('userIdToAdd').value;
             const token = localStorage.getItem('token');
 
-            fetch(`http://localhost:8080/tasks/${taskId}/addUsers`, {
+            fetch(`${apiUrl}/tasks/${taskId}/addUsers`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

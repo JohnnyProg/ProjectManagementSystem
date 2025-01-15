@@ -21,7 +21,11 @@ public class RestResponseEntityExceptionHandler extends ResponseEntityExceptionH
     protected ResponseEntity<Object> handleResourceNotFound(Exception ex) {
         return new ResponseEntity<>(ex.getMessage(), HttpStatus.NOT_FOUND);
     }
+    @ExceptionHandler(value = {Exception.class})
+    protected ResponseEntity<Object> handleAlolExceptions(Exception ex) {
 
+        return new ResponseEntity<>(ex, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
     @Nullable
     @Override
     protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException ex, HttpHeaders headers, HttpStatusCode status, WebRequest request) {

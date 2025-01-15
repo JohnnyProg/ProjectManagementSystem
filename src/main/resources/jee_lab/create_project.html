@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Project</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -29,8 +30,8 @@
             const projectName = document.getElementById('projectName').value;
             const projectDescription = document.getElementById('projectDescription').value;
             const token = localStorage.getItem('token');
-
-            fetch('http://localhost:8080/projects', {
+            const apiUrl = `${window.APP_API_URL}/api/v1`;
+            fetch(`${apiUrl}/projects`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

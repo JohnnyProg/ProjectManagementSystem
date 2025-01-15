@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Create Comment</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -26,8 +27,8 @@
             const token = localStorage.getItem('token');
             const urlParams = new URLSearchParams(window.location.search);
             const taskId = urlParams.get('taskId');
-
-            fetch('http://localhost:8080/comment/', {
+            const apiUrl = `${window.APP_API_URL}/api/v1`;
+            fetch(`${apiUrl}/comment/`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

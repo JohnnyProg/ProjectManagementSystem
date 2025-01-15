@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Projects</title>
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <script src="js/inject_env.php"></script>
 </head>
 <body>
     <div class="container">
@@ -32,6 +33,7 @@
     </div>
     <script src="js/app.js"></script>
     <script>
+        const apiUrl = `${window.APP_API_URL}/api/v1`;
         const projectList = document.getElementById('projectList');
         const projectPagination = document.getElementById('projectPagination');
         let currentPageProjects = 0;
@@ -41,7 +43,7 @@
 
         function fetchProjects(page = 0, size = 5, sortBy = 'id', direction = 'asc') {
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:8080/projects?paginationInfo.page=${page}&paginationInfo.size=${size}&paginationInfo.sortBy=${sortBy}&paginationInfo.direction=${direction}`, {
+            fetch(`${apiUrl}/projects?page=${page}&size=${size}&sortBy=${sortBy}&direction=${direction}`, {
                 headers: {
                     'Authorization': `Bearer ${token}`
                 }
@@ -89,7 +91,7 @@
 
         function deleteProject(id) {
             const token = localStorage.getItem('token');
-            fetch(`http://localhost:8080/projects/${id}`, {
+            fetch(`${apiUrl}/projects/${id}`, {
                 method: 'DELETE',
                 headers: {
                     'Authorization': `Bearer ${token}`

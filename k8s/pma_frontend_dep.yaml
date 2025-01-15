@@ -17,7 +17,7 @@ spec:
     spec:
       containers:
       - name: frontend
-        image: jangryta/management-system-frontend:k8s_v6
+        image: jangryta/management-system-frontend:k8s_v7
         ports:
         - containerPort: 80
         env:
